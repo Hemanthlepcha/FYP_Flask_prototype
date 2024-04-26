@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <!-- <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='index.css') }}"> -->
+    <link rel="stylesheet" href="/static/css/main.css" />
+
+    <style>
+        body {
+            background-color: #CADCFC;
+        }
+
+
+
+        .input-container {
+            display: flex;
+            flex-direction: row;
+            margin-top: 234px;
+            margin-left: 3rem;
+        }
+
+
+        .result {
+            margin-left: 2rem;
+            margin-top: -4rem;
+        }
+
+
+
+      
+        input#id_incorrect_grammar {
+            width: 100%;
+
+            font-size: 34px;
+        }
+
+        label {
+            display: block;
+            /* This ensures that each label is on a new line */
+            font-weight: bold;
+            /* Make the labels bold */
+            margin-bottom: 15px;
+            /* Add spacing below each label */
+            margin-top: 35px;
+            size: 34px;
+        }
+
+        .inputfield {
+            display: flex;
+            flex-direction: column;
+            margin-top: -77px;
+        }
+
+        textarea {
+            width: 600px;
+            height: 455px;
+            font-size: 34px;
+            border-radius: 4px;
+            border: none;
+            padding: 13px;
+        }
+
+        .field {
+
+            background-color: #F8F9FA;
+            /* Light grey background */
+            margin-bottom: 2rem;
+            width: 23rem;
+            padding: 24px;
+            height: 13rem;
+            border-radius: 8px;
+            /* Rounded corners */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            /* Subtle shadow for depth */
+            font-size: 20px;
+            /* Adjust font size as needed */
+            line-height: 1.5;
+            /* Adjust line height for readability */
+            color: #212529;
+            /* Dark grey color for the text */
+            display: block;
+            /* Ensure it's a block-level element */
+            overflow-wrap: break-word;
+            /* Ensure long words do not overflow */
+
+        }
+
+        #custom-button:hover {
+            cursor: url("GECproto/static/pointer.png"), auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="flex flex-col">
+        <div class="header w-full bg-[#000e6b] h-[150px]  flex flex-row">
+            <div class="logo h-[150px] w-[150px]  ml-8">
+                <img src="{{ url_for('static', filename='logo.png') }}" alt="Your Image Alt Text" />
+
+            </div>
+
+            <h1 class="text-6xl mt-9 ml-[20rem] text-cyan-50 ">Grammar Correction</h1>
+
+
+
+        </div>
+
+        <div class="flex justify-evenly items-center min-h-screen w-full">
+            <img src="{{ url_for('static', filename='side.png') }}" alt="Your Image Alt Text" />
+
+            <div class="flex flex-row justify-between  h-[450px] w-[50rem] rounded-lg bg-white">
+                <form method="post"  action="/" onsubmit="{()=>{event.preventDefault();}}" id="int-form" class="w-[200px] ml-[8rem] ">
+                    <div class="flex justify-center ">
+                        <div>
+                            <label for="username-error"
+                                class="block mb-2 text-xl font-medium ">Input</label>
+                            <textarea id="inputf"  class="field" name="inputf" spellcheck="false"
+                                class="bg-gray-50  border border-gray-300 text-gray-900 placeholder-gray-400 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-[24rem] h-[13rem] p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+                                placeholder="Enter your text here..."></textarea>
+
+                        </div>
+
+                        
+                    </div>
+                    <button type="submit"
+                            class="text-white h-[2.7rem] rounded-lg  bg-[#00246B] focus:ring-4 focus:outline-none font-medium  text-sm px-5 py-2.5 text-center ">
+                            Correct
+                        </button>
+                </form>
+
+                <div class="w-full ml-[4rem] flex flex-col">
+                    <label for="username-success"
+                        class="block text-xl ml-[5rem] font-medium">Output</label>
+                    <div class="w-full">
+
+                        <h1 class="field ml-[4rem]" id="typing-effect">
+                            <div class="w-full">
+                                <!-- <label for="username-success" class="block text-sm font-medium text-green-700 dark:text-green-500">Output</label> -->
+                                <div id="output-container">
+                                    <div id="component-container" class="  rounded-md p-4 max-w-sm w-full mx-auto">
+                                        <div class="animate-pulse flex space-x-4">
+                                            <div class="rounded-full bg-slate-200 h-10 w-10"></div>
+                                            <div class="flex-1 space-y-6 py-1">
+                                                <div class="h-2 bg-slate-200 rounded"></div>
+                                                <div class="space-y-3">
+                                                    <div class="grid grid-cols-3 gap-4">
+                                                        <div class="h-2 bg-slate-200 rounded col-span-2"></div>
+                                                        <div class="h-2 bg-slate-200 rounded col-span-1"></div>
+                                                    </div>
+                                                    <div class="h-2 bg-slate-200 rounded"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- <h1 class="output" id="typing-effect"></h1> -->
+                                </div>
+                            </div>
+
+
+                            <!-- Add any additional output elements you need here -->
+                    </div>
+                </div>
+            </div>
+            <script>
+                // Get the input text from the input field
+                var inputText = document.getElementById('inputf').value;
+                // Output text that you want to display with the typing effect
+                var outputText = '{{ output }}'; // This should be dynamically set based on your backend output
+                // Function to create and return a span element for a character
+                function createCharacterSpan(char, index) {
+                    const charSpan = document.createElement('span');
+                    charSpan.textContent = char;
+                    // If the current index is within the bounds of the input text and characters don't match,
+                    // set the color to red. Otherwise, set it to green.
+                    if (index < inputText.length && char !== inputText.charAt(index)) {
+                        charSpan.style.color = 'red';
+                    } else {
+                        charSpan.style.color = 'green';
+                    }
+                    return charSpan;
+                }
+
+                function typeWriter() {
+                    var i = 0;
+                    var outputElement = document.getElementById("typing-effect");
+                    outputElement.innerHTML = ''; // Clear the output container before starting
+                    document.getElementById('inputf').innerHTML="{{input}}";
+
+                    
+                    function addNextCharacter() {
+                        if (i < outputText.length) {
+                            const charSpan = createCharacterSpan(outputText.charAt(i), i);
+                            outputElement.appendChild(charSpan);
+                            i++;
+                            setTimeout(addNextCharacter, 50); // Adjust typing speed if necessary
+                        }
+                    }
+
+                    addNextCharacter();
+                }
+
+                // Assuming this script runs after the DOM is fully loaded
+                // Adjust according to your actual application structure
+                document.addEventListener('DOMContentLoaded', function () {
+                    // Delay the typing effect start if necessary
+
+                    setTimeout(typeWriter, 1000); // Adjust delay as needed
+                });
+            </script>
+
+
+
+        </div>
+</body>
+
+</html>
